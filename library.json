@@ -1,0 +1,19 @@
+{
+    "name": "Arduino74HC4067",
+    "version": "1.0.0",
+    "keywords": ["arduino", "74HC4067", "gpio", "analog", "esp8266", "esp32"],
+    "description": "一个Arduino的`74HC4067`的I/O拓展板库，支持：Arduino,ESP8266,ESP32等等",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/arduine/Arduino74HC4067.git"
+    },
+    "authors": [
+        {
+            "name": "sollyu",
+            "email": "sollyu@qq.com",
+            "maintainer": true
+        }
+    ],
+    "frameworks": "arduino",
+    "platforms": "*"
+}
