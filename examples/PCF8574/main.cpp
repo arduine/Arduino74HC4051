@@ -31,24 +31,29 @@
 #define GPIO_S2     ArduinoPCF8574::PIN::P3
 #define GPIO_S3     ArduinoPCF8574::PIN::P4
 
-static ArduinoPCF8574  sPCF8574(ArduinoPCF8574::JUMP::J32);
+static ArduinoPCF8574 sPCF8574(ArduinoPCF8574::JUMP::J32);
 static Arduino74HC4067 s74HC4067(GPIO_SIG, [](bool s0, bool s1, bool s2, bool s3) {
-    auto state = sPCF8574.read()
-            .set(GPIO_S0, s0)
-            .set(GPIO_S1, s1)
-            .set(GPIO_S2, s2)
-            .set(GPIO_S3, s3);
+    auto state = sPCF8574.read();
+    if (state.P0 != s0) state.set(GPIO_S0, s0);
+    if (state.P1 != s1) state.set(GPIO_S1, s1);
+    if (state.P2 != s2) state.set(GPIO_S2, s2);
+    if (state.P3 != s3) state.set(GPIO_S3, s3);
     sPCF8574.write(state);
 });
 
 void setup() {
+    Serial.begin(9600);
     sPCF8574.setup();
     s74HC4067.setup();
     sPCF8574.write(sPCF8574.read().set(GPIO_EN, false));    // 设置EN接口为低电平表示开启
 }
 
 void loop() {
+    // 读取
     auto value = s74HC4067.analogRead(Arduino74HC4067::CHANNEL::C0);
-    Serial.printf("channel value %d", value);
-    delay(3000);
+    Serial.printf("channel value %d\n", value);
+    delay(1000);
+
+    // 写入
+    // s74HC4067.analogWrite(Arduino74HC4067::CHANNEL::C0, 1000);
 }

@@ -25,25 +25,30 @@
 #define GPIO_S2     02      // D4
 #define GPIO_S3     14      // D5
 #elif ARDUINO_ARCH_ESP32
-#define GPIO_SIG    14      // D14
-#define GPIO_EN     21      // D21
-#define GPIO_S0     19      // D19
-#define GPIO_S1     18      // D18
-#define GPIO_S2      5      // D5
-#define GPIO_S3      4      // D4
+#define GPIO_SIG    14
+#define GPIO_EN     32
+#define GPIO_S0     33
+#define GPIO_S1     25
+#define GPIO_S2     26
+#define GPIO_S3     27
 #endif
 
+//
+// 定义引脚
+//
 static Arduino74HC4067 s74HC4067(GPIO_SIG, GPIO_EN, GPIO_S0, GPIO_S1, GPIO_S2, GPIO_S3);
 
 void setup() {
-    s74HC4067.setup();
-    s74HC4067.setEnabled(true);
+    Serial.begin(9600);
+    s74HC4067.setup();              // <-- 初始化
+    s74HC4067.setEnabled(true);     // <-- 启动功能
 }
 
 void loop() {
     auto value = s74HC4067.analogRead(Arduino74HC4067::CHANNEL::C0);
-    Serial.printf("channel value %d", value);
+    Serial.printf("channel value %d\n", value);
     delay(3000);
 
-    s74HC4067.analogWrite(Arduino74HC4067::CHANNEL::C0, 800);
+    // 写入
+    // s74HC4067.analogWrite(Arduino74HC4067::CHANNEL::C0, 800);
 }
