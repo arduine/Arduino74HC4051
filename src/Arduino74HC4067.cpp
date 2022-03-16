@@ -1,18 +1,17 @@
-/*
- * Copyright (C) 2022. sollyu
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (C) 2022. sollyu
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//         http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 #include "Arduino74HC4067.h"
 
@@ -32,10 +31,17 @@ void Arduino74HC4067::setup() {
         pinMode(mGpioS2, OUTPUT);
         pinMode(mGpioS3, OUTPUT);
         mPinStateCallback = [&](bool s0, bool s1, bool s2, bool s3) {
-            ::digitalWrite(mGpioS0, s0 ? HIGH : LOW);
-            ::digitalWrite(mGpioS1, s1 ? HIGH : LOW);
-            ::digitalWrite(mGpioS2, s2 ? HIGH : LOW);
-            ::digitalWrite(mGpioS3, s3 ? HIGH : LOW);
+            auto readAndSet = [](uint8_t gpio, bool value) {
+                int readValue = ::digitalRead(gpio) ;
+                if (value && readValue != HIGH)
+                    ::digitalWrite(gpio, HIGH);
+                if (!value && readValue != LOW)
+                    ::digitalWrite(gpio, LOW);
+            };
+            readAndSet(mGpioS0, s0);
+            readAndSet(mGpioS1, s1);
+            readAndSet(mGpioS2, s2);
+            readAndSet(mGpioS3, s3);
         };
     }
 }
@@ -69,7 +75,11 @@ void Arduino74HC4067::digitalWrite(const Arduino74HC4067::CHANNEL &channel, bool
 
 void Arduino74HC4067::analogWrite(const Arduino74HC4067::CHANNEL &channel, int value) {
     mPinStateCallback(bitRead(channel, 3), bitRead(channel, 2), bitRead(channel, 1), bitRead(channel, 0));
+#if defined(ARDUINO_ARCH_ESP32)
+    ::ledcWrite(mGpioSig, value);
+#else
     ::analogWrite(mGpioSig, value);
+#endif
 }
 
 
