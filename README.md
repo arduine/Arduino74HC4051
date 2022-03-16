@@ -4,6 +4,8 @@
 
 一个Arduino的`74HC4067`的I/O拓展板库。 74HC4067 作用是选通一路对十六路模拟信号。
 
+![74HC4067](images/image-01.png)
+
 ## 导入
 
 #### PlatformIO
