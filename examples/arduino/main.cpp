@@ -14,41 +14,29 @@
  * limitations under the License.
  */
 #include <Arduino.h>
+#include <Arduino74HC4051.h>
 
-#include <Arduino74HC4067.h>
-
-#ifdef ARDUINO_ARCH_ESP8266
-#define GPIO_SIG    17      // ADC
-#define GPIO_EN     05      // D1
-#define GPIO_S0     04      // D2
-#define GPIO_S1     00      // D3
-#define GPIO_S2     02      // D4
-#define GPIO_S3     14      // D5
-#elif ARDUINO_ARCH_ESP32
-#define GPIO_SIG    14
-#define GPIO_EN     32
-#define GPIO_S0     33
-#define GPIO_S1     25
-#define GPIO_S2     26
-#define GPIO_S3     27
-#endif
-
-//
-// 定义引脚
-//
-static Arduino74HC4067 s74HC4067(GPIO_SIG, GPIO_EN, GPIO_S0, GPIO_S1, GPIO_S2, GPIO_S3);
+static Arduino74HC4051 sArduino74HC4051(A0, DD7, DD6, DD5, DD4);
 
 void setup() {
     Serial.begin(9600);
-    s74HC4067.setup();              // <-- 初始化
-    s74HC4067.setEnabled(true);     // <-- 启动功能
+    sArduino74HC4051.setup();
+    sArduino74HC4051.setEnabled(true);
 }
 
 void loop() {
-    auto value = s74HC4067.analogRead(Arduino74HC4067::CHANNEL::C0);
-    Serial.printf("channel value %d\n", value);
-    delay(3000);
+    auto X0 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X0);
+    auto X1 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X1);
+    auto X2 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X2);
+    auto X3 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X3);
+    auto X4 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X4);
+    auto X5 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X5);
+    auto X6 = sArduino74HC4051.analogRead(Arduino74HC4051::CHANNEL::X6);
+    Serial.println(String() +
+                   ", X0: " + X0 + ", X1: " + X1 + ", X2: " + X2 + ", X3: " + X3 +
+                   ", X4: " + X4 + ", X5: " + X5 + ", X6: " + X6);
 
-    // 写入
-    // s74HC4067.analogWrite(Arduino74HC4067::CHANNEL::C0, 800);
+    delay(100);
+    sArduino74HC4051.analogWrite(Arduino74HC4051::CHANNEL::X7, X6);
+    delay(1000);
 }

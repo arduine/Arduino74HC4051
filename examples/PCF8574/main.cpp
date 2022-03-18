@@ -17,7 +17,7 @@
 #include <Arduino.h>
 
 #include <ArduinoPCF8574.h>
-#include <Arduino74HC4067.h>
+#include <Arduino74HC4051.h>
 
 #ifdef ARDUINO_ARCH_ESP8266
 #define GPIO_SIG    17      // ADC
@@ -32,7 +32,7 @@
 #define GPIO_S3     ArduinoPCF8574::PIN::P4
 
 static ArduinoPCF8574 sPCF8574(ArduinoPCF8574::JUMP::J32);
-static Arduino74HC4067 s74HC4067(GPIO_SIG, [](bool s0, bool s1, bool s2, bool s3) {
+static Arduino74HC4051 s74HC4067(GPIO_SIG, [](bool s0, bool s1, bool s2, bool s3) {
     auto state = sPCF8574.read();
     if (state.P0 != s0) state.set(GPIO_S0, s0);
     if (state.P1 != s1) state.set(GPIO_S1, s1);
@@ -50,10 +50,10 @@ void setup() {
 
 void loop() {
     // 读取
-    auto value = s74HC4067.analogRead(Arduino74HC4067::CHANNEL::C0);
+    auto value = s74HC4067.analogRead(Arduino74HC4051::CHANNEL::X0);
     Serial.printf("channel value %d\n", value);
     delay(1000);
 
     // 写入
-    // s74HC4067.analogWrite(Arduino74HC4067::CHANNEL::C0, 1000);
+    // s74HC4067.analogWrite(Arduino74HC4051::CHANNEL::X0, 1000);
 }
